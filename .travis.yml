@@ -1,0 +1,13 @@
+language: bash
+services: docker
+
+env:
+  global:
+    - DOCKERHUB_IMG=yhnw/openwrt-buildroot
+
+  matrix:
+    - VERSION=latest TARGET=wzr-hp-ag300h    
+#    - VERSION=15.05.1 TARGET=wzr-hp-ag300h
+
+script:
+  - docker run --rm -u openwrt -w /home/openwrt -v $(pwd):/work ${DOCKERHUB_IMG}:${VERSION} /work/build.sh ${TARGET}
