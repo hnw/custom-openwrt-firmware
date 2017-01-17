@@ -1,13 +1,43 @@
-language: bash
+language: c
 services: docker
+cache: ccache
 
 env:
   global:
-    - DOCKERHUB_IMG=yhnw/openwrt-buildroot
+    - USER=yhnw
+    - REPO=openwrt-buildroot
+    - secure: "eCCHweDeafmxmWe4wD4YsfTIBsOAvwtXqnfixsrt/Dd3Nc/q+ew5aPPk/ksemX7DZqzrQO3/TPlYeeaGkVwOu45ujb3EYlSGhsTtm70oBZP6s8s+NlppAsEztEVRKDCr+QlO23nsJrtVv7HvtUa0KxoH4XRbmLNN8auTdIZoTIahZRLS97yLJbeUNUXqok7EXdNI5Y6SAuhzsVoDOGYqSuLe5rlPtE2gVg2ByaInDBukQgxiHl5BBx0eut2Im4sLVdXeRDnGGMY7RcKd4HHTeyvRbqW857u2drXRPoU0qzg9OxDKNu0EauIuoRVqBsVfFdwdRW883irzspfaRiYGMb6+kIOuwcti8Qj2NYckPTms/7WLCwupOlcYYY1wAslpVDmBfnprtSuXgbAG56otdow+iih/leTEHpxaHhIVA9f89hkiWANCrcrzShRET7Sa6BLEwXV7P6t95KzfCk86qS7Xynjpsi4fvtlC3hnw9+JGwRUANe9pNOkFq6Ldh39kdyo9FRO9UJT1+K76+UoJDo8BTAmKbb9sswr7cPHlyBR4WXH1HvGIcabwdNjZGqGa4L5TbcOAGjuTYPLIj12MSGjUV0PZdZpqXCpctAM8d2F1sI+A/30h2pl0cKEjUjANJEU/HmbuwvU+21L4Zyoo8RGEsSB8FGTm1bbCaEYtdsU="
 
   matrix:
-    - VERSION=latest TARGET=wzr-hp-ag300h    
-#    - VERSION=15.05.1 TARGET=wzr-hp-ag300h
+    - BRANCH=15.05.1 ARCH=ar71xx VARIANT=fpuemu
+
+before_script:
+  - |
+    if [ -n "${CLEANUP_CCACHE_DIR}" ]; then
+      echo "Clean up ccache dir..."
+      rm -rf ${HOME}/.ccache/*
+    else
+      ls -la ${HOME}/.ccache/
+    fi
 
 script:
-  - docker run --rm -u openwrt -w /home/openwrt -v $(pwd):/work ${DOCKERHUB_IMG}:${VERSION} /work/build.sh ${TARGET}
+  - >-
+    docker run
+    -u openwrt
+    -w /home/openwrt
+    -v $(pwd):/work
+    -v ${HOME}/.ccache:/home/openwrt/.ccache
+    ${USER}/${REPO}:${BRANCH}-${ARCH} /work/build.sh ${BRANCH} ${ARCH} ${VARIANT}
+
+after_script:
+  - ls -la bin
+
+deploy:
+  - provider: releases
+    api_key:
+      secure: "sC76dFlU7buHevSXsLtzwUP758FsCepJNhPRwuVqukg2EzW/vOQrjJY6xJVykNYa7MV9SVOtwzenNkvff/18b1xGuGcSkDVSPdWOT52MP+bXvPc0Gu0f/GuVPHCQ7ZXpnD+MI+3JuLRfhpCNC/Pst784XkN997PwelOtsBXFyMSGCjIWLX01tWoi5Hc43rUyFml2a0uGLwCuG7wUEc7n9H4JjkigrPMCwQgst6bjVriMbL4xdxRzWTpoHRQJh8MQ//raP6bO175ZAqWHgwtor9Zp9GXuRX++61LsDFf6lCKjWbK1hwdD0QxMy3c8IPDVaHqEPYW1wwoa9XiV9iItSXUVA+QjNRNu5hlf6jaNt5EZwxQhDUVXNxbwmMLpdzaADeuot6JyZSaMFia2oxfzzQf7wL4NQ+SFK+yIlS2eL5BQmmnvg3DVZ5BIbPdDHLEynKdMTXBNzXzvLI7TSbOyL7VVU57drvZz0S0RvCx5c2C5MfXBlI0j11zCcUMMhcCce/utCiUMqhIjHLi+YgHttxKE8Z/04KKt9rTrxZh86YvPFd/aIH0ojt7J8o4UVD84UEozLFZsIf6WHQL/5TY0QQJY3WkHBs01C3UsrL+YQwRZigiWpGErpu6ugwxtdydcUzXg2hBbEm1PltNAxJLSHPd0v0IaphfcavahLrFdeDs="
+    file_glob: true
+    file: "bin/*.bin"
+    skip_cleanup: true
+    on:
+      tags: true
