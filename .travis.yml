@@ -6,8 +6,6 @@ env:
   global:
     - USER=yhnw
     - REPO=openwrt-buildroot
-    - secure: "eCCHweDeafmxmWe4wD4YsfTIBsOAvwtXqnfixsrt/Dd3Nc/q+ew5aPPk/ksemX7DZqzrQO3/TPlYeeaGkVwOu45ujb3EYlSGhsTtm70oBZP6s8s+NlppAsEztEVRKDCr+QlO23nsJrtVv7HvtUa0KxoH4XRbmLNN8auTdIZoTIahZRLS97yLJbeUNUXqok7EXdNI5Y6SAuhzsVoDOGYqSuLe5rlPtE2gVg2ByaInDBukQgxiHl5BBx0eut2Im4sLVdXeRDnGGMY7RcKd4HHTeyvRbqW857u2drXRPoU0qzg9OxDKNu0EauIuoRVqBsVfFdwdRW883irzspfaRiYGMb6+kIOuwcti8Qj2NYckPTms/7WLCwupOlcYYY1wAslpVDmBfnprtSuXgbAG56otdow+iih/leTEHpxaHhIVA9f89hkiWANCrcrzShRET7Sa6BLEwXV7P6t95KzfCk86qS7Xynjpsi4fvtlC3hnw9+JGwRUANe9pNOkFq6Ldh39kdyo9FRO9UJT1+K76+UoJDo8BTAmKbb9sswr7cPHlyBR4WXH1HvGIcabwdNjZGqGa4L5TbcOAGjuTYPLIj12MSGjUV0PZdZpqXCpctAM8d2F1sI+A/30h2pl0cKEjUjANJEU/HmbuwvU+21L4Zyoo8RGEsSB8FGTm1bbCaEYtdsU="
-
   matrix:
     - BRANCH=15.05.1 ARCH=ar71xx VARIANT=fpuemu
 
