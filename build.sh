@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 BRANCH=$1
 ARCH=$2

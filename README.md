@@ -3,8 +3,9 @@
 # custom-openwrt-firmware
 
 個人的に必要なOpenWrtのカスタムファームウェアをビルドするプロジェクトです。
+ビルド済みイメージは[releases](https://github.com/hnw/custom-openwrt-firmware/releases)からダウンロードできます。
 
-現在下記のイメージがあります。
+## 現在作成しているイメージ
 
  * OpenWrt
    * 15.05.1
