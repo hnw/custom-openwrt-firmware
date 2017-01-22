@@ -1,31 +1,26 @@
 language: c
 services: docker
-cache: ccache
+cache:
+  directories:
+  - cache
 
 env:
   global:
     - USER=yhnw
     - REPO=openwrt-buildroot
   matrix:
-    - BRANCH=15.05.1 ARCH=ar71xx VARIANT=fpuemu
-
-before_script:
-  - |
-    if [ -n "${CLEANUP_CCACHE_DIR}" ]; then
-      echo "Clean up ccache dir..."
-      rm -rf ${HOME}/.ccache/*
-    else
-      ls -la ${HOME}/.ccache/
-    fi
+    - BRANCH=15.05.1 BOARD=ar71xx VARIANT=fpuemu
 
 script:
   - >-
     docker run
     -u openwrt
     -w /home/openwrt
-    -v $(pwd):/work
-    -v ${HOME}/.ccache:/home/openwrt/.ccache
-    ${USER}/${REPO}:${BRANCH}-${ARCH} /work/build.sh ${BRANCH} ${ARCH} ${VARIANT}
+    -v $(pwd):/hostdir
+    -e TRAVIS=${TRAVIS}
+    -e TERM=xterm
+    -e COLOR=always
+    ${USER}/${REPO}:${BRANCH}-${BOARD} /hostdir/build.sh ${BRANCH} ${BOARD} ${VARIANT}
 
 after_script:
   - ls -la bin
